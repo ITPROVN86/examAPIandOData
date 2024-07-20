@@ -1,0 +1,75 @@
+﻿@model IEnumerable<ShopDTO.CategoryDTO>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<div id="result"></div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CategoryId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CategoryName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CategoryId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CategoryName)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.CategoryId }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.CategoryId }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.CategoryId })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            // Hiển thị biểu tượng tải
+            $('#loading').show();
+            setTimeout(function () {
+                // Gọi API bằng AJAX
+                $.ajax({
+                    url: 'https://localhost:7182/api/Category', 
+                    type: 'GET',
+                    success: function (data) {
+                        // Ẩn biểu tượng tải
+                        $('#loading').hide();
+                        // Hiển thị dữ liệu nhận được
+                        var resultHtml = '<ul>';
+                        data.forEach(function (category) {
+                            resultHtml += '<li>' + category.categoryName + '</li>';
+                        });
+                        resultHtml += '</ul>';
+                        $('#result').html(resultHtml);
+                    },
+                    error: function (error) {
+                        // Ẩn biểu tượng tải
+                        $('#loading').hide();
+
+                    }
+                });
+            }, 1000); // Thời gian chờ 3 giây
+        });
+    </script>
+}
